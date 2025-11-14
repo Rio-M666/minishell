@@ -17,14 +17,34 @@
 typedef struct s_shell
 {
 	char **envp; // 今後のため環境変数など保持予定
-	int	last_status;
-}		t_shell;
-int		execute_with_args(char **args);
-char	**ft_split(char const *s, char c);
-char	*ft_strjoin(char const *s1, char const *s2);
-void	free_array(char **arr);
-char	*ft_strchr(const char *str, int c);
-char	*ft_strdup(const char *s);
-char	*get_command_path(char *cmd);
-void	ft_putstr_fd(char *s, int fd);
+	int				last_status;
+}					t_shell;
+
+typedef enum e_token_type
+{
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_REDIR_APPEND,
+	TOKEN_REDIR_HEREDOC,
+}					t_token_type;
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
+}					t_token;
+int					execute_with_args(char **args);
+char				**ft_split(char const *s, char c);
+char				*ft_strjoin(char const *s1, char const *s2);
+void				free_array(char **arr);
+char				*ft_strchr(const char *str, int c);
+char				*ft_strdup(const char *s);
+char				*get_command_path(char *cmd);
+void				ft_putstr_fd(char *s, int fd);
+char				*ft_substr(char const *s, unsigned int start, size_t len);
+t_token				*tokenize(char *input);
+void				print_tokens(t_token *tokens);
+void				free_tokens(t_token *tokens);
 #endif

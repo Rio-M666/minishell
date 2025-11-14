@@ -6,7 +6,7 @@ INCLUDES = -I./includes
 LDFLAGS = -lreadline
 
 
-SRCS = main.c execute.c utils.c path.c
+SRCS = main.c execute.c utils.c path.c talknizer.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)

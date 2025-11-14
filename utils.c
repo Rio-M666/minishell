@@ -11,6 +11,30 @@ size_t	ft_strlen(const char *str)
 	}
 	return (i);
 }
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*sub;
+	size_t	i;
+
+	if (!s)
+		return (NULL);
+	if (start >= ft_strlen(s))
+		return (ft_strdup(""));
+	if (ft_strlen(s + start) < len)
+		len = ft_strlen(s + start);
+	sub = (char *)malloc(sizeof(char) * (len + 1));
+	if (!sub)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		sub[i] = s[start + i];
+		i++;
+	}
+	sub[i] = '\0';
+	return (sub);
+}
+
 void	ft_putstr_fd(char *s, int fd)
 {
 	if (s == NULL)
@@ -49,33 +73,7 @@ char	*ft_strdup(const char *s)
 	return (dest);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	size_t	i;
-	size_t	s_len;
-	size_t	sub_len;
-	char	*str;
 
-	if (!s)
-		return (NULL);
-	s_len = ft_strlen(s);
-	if (start >= s_len)
-		return (ft_strdup(""));
-	sub_len = s_len - start;
-	if (sub_len > len)
-		sub_len = len;
-	str = (char *)malloc(sizeof(char) * (sub_len + 1));
-	if (!str)
-		return (NULL);
-	i = 0;
-	while (i < sub_len)
-	{
-		str[i] = s[start + i];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
-}
 char	*ft_strchr(const char *str, int c)
 {
 	size_t			i;
