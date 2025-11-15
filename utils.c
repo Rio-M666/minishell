@@ -73,7 +73,6 @@ char	*ft_strdup(const char *s)
 	return (dest);
 }
 
-
 char	*ft_strchr(const char *str, int c)
 {
 	size_t			i;
@@ -120,7 +119,14 @@ void	ft_free(char **str, int count)
 	}
 	free(str);
 }
-
+int	ft_isalpha(char c)
+{
+	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+}
+int	ft_isalnum(int c)
+{
+	return (c >= '0' && c <= '9');
+}
 char	**split_sub(char **str, char const *s, char c)
 {
 	size_t	len;
