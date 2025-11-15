@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   talknizer.c                                        :+:      :+:    :+:   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 21:55:12 by mrio              #+#    #+#             */
-/*   Updated: 2025/11/14 23:26:05 by mrio             ###   ########.fr       */
+/*   Updated: 2025/11/15 16:12:36 by mrio             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,35 @@ void	add_token(t_token **head, t_token *new_token)
 	current->next = new_token;
 }
 
-char	*get_word(char **str)
+char	*get_word(char **str, int *error)
 {
 	char	*start;
 	int		len;
+	char	quote;
 
 	start = *str;
 	len = 0;
-	start = *str;
-	len = 0;
+	*error = 0;
 	while ((*str)[len] && !is_special((*str)[len]) && (*str)[len] != ' '
 		&& (*str)[len] != '\t')
-		len++;
+	{
+		if ((*str)[len] == '"' || (*str)[len] == '\'')
+		{
+			quote = (*str)[len];
+			len++;
+			while ((*str)[len] && (*str)[len] != quote)
+				len++;
+			if ((*str)[len] == '\0')
+			{
+				*error = 1;
+				write(STDERR_FILENO, "minishell: unclosed quote\n", 26);
+				return (NULL);
+			}
+			len++;
+		}
+		else
+			len++;
+	}
 	*str += len;
 	return (ft_substr(start, 0, len));
 }
@@ -121,6 +138,7 @@ t_token	*tokenize(char *input)
 	t_token	*tokens;
 	t_token	*new_token;
 	char	*word;
+	int		error;
 
 	tokens = NULL;
 	while (*input)
@@ -135,7 +153,12 @@ t_token	*tokenize(char *input)
 		}
 		else
 		{
-			word = get_word(&input);
+			word = get_word(&input, &error);
+			if (error)
+			{
+				free_tokens(tokens);
+				return (NULL);
+			}
 			if (word && *word)
 			{
 				new_token = create_token(TOKEN_WORD, word);
