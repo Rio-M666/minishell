@@ -183,11 +183,11 @@ void	free_array(char **arr)
 char	**ft_split(char const *s, char c)
 {
 	char	**str;
-	int		i;
+	// int		i;
 
 	if (!s)
 		return (NULL);
-	i = 0;
+	// i = 0;
 	str = malloc((word_count(s, c) + 1) * sizeof(char *));
 	if (!str)
 		return (NULL);
