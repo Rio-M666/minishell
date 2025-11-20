@@ -1,12 +1,18 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -I$(CURDIR)
 INCLUDES = -I./includes
 LDFLAGS = -lreadline
 
 
 SRCS = main.c execute.c utils.c path.c tokenizer.c
+SRCS += parser/parser.c \
+		parser/parser_utils.c \
+		parser/parser_list_utils.c \
+		parser/parser_free.c \
+		parser/parser_debug.c
+
 
 # Object files
 OBJS = $(SRCS:.c=.o)
