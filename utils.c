@@ -125,7 +125,8 @@ int	ft_isalpha(char c)
 }
 int	ft_isalnum(int c)
 {
-	return (c >= '0' && c <= '9');
+	return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
+		|| (c >= 'A' && c <= 'Z'));
 }
 char	**split_sub(char **str, char const *s, char c)
 {
