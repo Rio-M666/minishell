@@ -15,7 +15,10 @@ static void	process_input(char *input, t_shell *shell)
 		return ;
 	// print_tokens(tokens); // デバッグ用
 
-	// 2. Parse
+	// 2. Expand variables
+	expand_tokens(tokens, shell);
+
+	// 3. Parse
 	pipeline = parse(tokens);
 	free_tokens(tokens); // Parseが終わればTokenは不要
 	if (!pipeline)
