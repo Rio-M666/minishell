@@ -25,8 +25,19 @@ static void	process_input(char *input, t_shell *shell)
 		return ;
 	// print_pipeline(pipeline); // デバッグ用
 
-	// 3. Execute
+	// 4. Process heredocs
+	if (!process_heredocs(pipeline, shell))
+	{
+		shell->last_status = 130;
+		free_pipeline(pipeline);
+		return ;
+	}
+
+	// 5. Execute
 	shell->last_status = execute_pipeline(pipeline, shell);
+
+	// 6. Cleanup heredoc temp files
+	cleanup_heredocs(pipeline);
 
 	free_pipeline(pipeline);
 }

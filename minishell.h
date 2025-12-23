@@ -148,4 +148,8 @@ char					*get_env_value(char *var_name, int var_len,
 char					*expand_variables(char *str, t_shell *shell);
 void					expand_tokens(t_token *tokens, t_shell *shell);
 
+// --- heredoc.c ---
+int						process_heredocs(t_cmd *pipeline, t_shell *shell);
+void					cleanup_heredocs(t_cmd *pipeline);
+
 #endif

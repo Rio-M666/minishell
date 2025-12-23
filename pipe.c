@@ -53,6 +53,17 @@ static int	apply_redirections(t_redirect *redir_list)
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
+		else if (redir->type == REDIR_HEREDOC)
+		{
+			fd = open(redir->filename, O_RDONLY);
+			if (fd == -1)
+			{
+				perror(redir->filename);
+				return (0);
+			}
+			dup2(fd, STDIN_FILENO);
+			close(fd);
+		}
 		redir = redir->next;
 	}
 	return (1);
