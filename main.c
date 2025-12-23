@@ -16,14 +16,17 @@ static void	process_input(char *input, t_shell *shell)
 		return ;
 	// print_tokens(tokens); // デバッグ用
 
-	// 2. Parse
+	// 2. Expand variables
+	expand_tokens(tokens, shell);
+
+	// 3. Parse
 	pipeline = parse(tokens);
 	free_tokens(tokens); // Parseが終わればTokenは不要
 	if (!pipeline)
 		return ;
 	// print_pipeline(pipeline); // デバッグ用
 
-	// 3. Execute
+	// 4. Execute
 	// (注: 今回の execute.c はパイプを処理しない単発実行用ですが、ループで回します)
 	current_cmd = pipeline;
 	while (current_cmd)
