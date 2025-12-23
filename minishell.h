@@ -78,6 +78,9 @@ typedef struct s_cmd
 // --- execute.c ---
 int		execute_with_args(char **args);
 
+// --- pipe.c ---
+int		execute_pipeline(t_cmd *pipeline, t_shell *shell);
+
 // --- path.c ---
 char	*get_command_path(char *cmd);
 
