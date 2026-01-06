@@ -6,7 +6,7 @@ INCLUDES = -I./includes
 LDFLAGS = -lreadline
 
 
-SRCS = main.c execute.c utils.c path.c tokenizer.c pipe.c
+SRCS = main.c execute.c utils.c path.c tokenizer.c pipe.c signal_handlers.c expander.c heredoc.c
 SRCS += parser/parser.c \
 		parser/parser_utils.c \
 		parser/parser_list_utils.c \

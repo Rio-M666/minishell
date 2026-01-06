@@ -54,6 +54,8 @@ t_redirect	*create_redirect(t_redir_type type, char *filename)
 		return (NULL);
 	new_redir->type = type;
 	new_redir->filename = filename;
+	new_redir->heredoc_fd = -1;
+	new_redir->expand_heredoc = 1;
 	new_redir->next = NULL;
 	return (new_redir);
 }
