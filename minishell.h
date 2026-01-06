@@ -69,6 +69,8 @@ typedef struct s_redirect
 {
 	t_redir_type		type;
 	char				*filename;
+	int					heredoc_fd;
+	int					expand_heredoc;
 	struct s_redirect	*next;
 }						t_redirect;
 
@@ -84,6 +86,15 @@ typedef struct s_quote_state
 	int					in_single;
 	int					in_double;
 }						t_quote_state;
+
+// ===================================================================
+// グローバル変数
+// ===================================================================
+extern volatile sig_atomic_t	g_signal;
+
+// ===================================================================
+// 関数宣言
+// ===================================================================
 
 // --- execute.c ---
 int						execute_with_args(char **args);
@@ -147,5 +158,18 @@ char					*get_env_value(char *var_name, int var_len,
 							t_shell *shell);
 char					*expand_variables(char *str, t_shell *shell);
 void					expand_tokens(t_token *tokens, t_shell *shell);
+
+// --- signal_handlers.c ---
+void					handle_sigint_interactive(int sig);
+void					setup_signals_interactive(void);
+void					setup_signals_child(void);
+void					handle_sigint_heredoc(int sig);
+
+// --- heredoc.c ---
+int						process_heredocs(t_cmd *pipeline, t_shell *shell);
+void					cleanup_heredocs(t_cmd *pipeline);
+
+// --- utils.c (追加) ---
+int						ft_strcmp(const char *s1, const char *s2);
 
 #endif

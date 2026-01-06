@@ -17,6 +17,7 @@ static int	handle_redirection(t_cmd *cmd, t_token **current)
 	t_redirect		*redir;
 	t_redir_type	type;
 	char			*filename;
+	t_token			*filename_token;
 
 	if ((*current)->type == TOKEN_REDIR_IN)
 		type = REDIR_IN;
@@ -26,18 +27,26 @@ static int	handle_redirection(t_cmd *cmd, t_token **current)
 		type = REDIR_APPEND;
 	else
 		type = REDIR_HEREDOC;
-	*current = (*current)->next; 
+	*current = (*current)->next;
 	if (!*current || (*current)->type != TOKEN_WORD)
 	{
 		handle_syntax_error((*current) ? (*current)->value : "newline");
 		return (0);
 	}
+	filename_token = *current;
 	filename = ft_strdup((*current)->value);
 	if (!filename)
 		return (0); // Malloc error
 	redir = create_redirect(type, filename);
 	if (!redir)
 		return (free(filename), 0); // Malloc error
+	if (type == REDIR_HEREDOC)
+	{
+		if (filename_token->quote == QUOTE_NONE)
+			redir->expand_heredoc = 1;
+		else
+			redir->expand_heredoc = 0;
+	}
 	add_redir_back(&cmd->redir_list, redir);
 	*current = (*current)->next; // ファイル名を消費
 	return (1); // 成功

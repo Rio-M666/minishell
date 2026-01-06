@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+volatile sig_atomic_t	g_signal = 0;
+
 static void	process_input(char *input, t_shell *shell)
 {
 	t_token	*tokens;
@@ -25,9 +27,18 @@ static void	process_input(char *input, t_shell *shell)
 		return ;
 	// print_pipeline(pipeline); // デバッグ用
 
-	// 3. Execute
+	// 4. Process heredocs
+	if (!process_heredocs(pipeline, shell))
+	{
+		cleanup_heredocs(pipeline);
+		free_pipeline(pipeline);
+		return ;
+	}
+
+	// 5. Execute
 	shell->last_status = execute_pipeline(pipeline, shell);
 
+	cleanup_heredocs(pipeline);
 	free_pipeline(pipeline);
 }
 
@@ -40,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	shell.envp = envp; // 環境変数を保持
 	shell.last_status = 0;
-
+	setup_signals_interactive();
 	while (1)
 	{
 		line = readline("minishell> ");

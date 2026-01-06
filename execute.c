@@ -26,6 +26,7 @@ int	execute_with_args(char **args)
 	if (pid == 0)
 	{
 		extern char **environ;
+		setup_signals_child();
 		execve(cmd_path, args, environ);
 
 		perror("execve");

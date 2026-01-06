@@ -53,6 +53,15 @@ static int	apply_redirections(t_redirect *redir_list)
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
+		else if (redir->type == REDIR_HEREDOC)
+		{
+			if (redir->heredoc_fd == -1)
+			{
+				ft_putstr_fd("minishell: heredoc: invalid file descriptor\n", 2);
+				return (0);
+			}
+			dup2(redir->heredoc_fd, STDIN_FILENO);
+		}
 		redir = redir->next;
 	}
 	return (1);
@@ -64,6 +73,7 @@ static void	execute_child(t_cmd *cmd, int *prev_pipe_fd, int *pipe_fd,
 	char		*cmd_path;
 	extern char	**environ;
 
+	setup_signals_child();
 	if (prev_pipe_fd != NULL)
 	{
 		dup2(prev_pipe_fd[0], STDIN_FILENO);
