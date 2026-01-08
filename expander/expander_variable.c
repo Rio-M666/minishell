@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expander.c                                         :+:      :+:    :+:   */
+/*   expander_variable.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,14 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	update_quote_state(char c, t_quote_state *state)
-{
-	if (c == '\'' && !state->in_double)
-		state->in_single = !state->in_single;
-	else if (c == '"' && !state->in_single)
-		state->in_double = !state->in_double;
-}
 
 int	get_var_name_len(char *str)
 {
@@ -60,42 +52,7 @@ char	*get_env_value(char *var_name, int var_len, t_shell *shell)
 	return (ft_strdup(value));
 }
 
-static char	*append_str(char *result, char *str, int *i, int *res_len)
-{
-	char	*new_result;
-	int		j;
-	int		k;
-
-	(void)i;
-	if (!result)
-		new_result = ft_strdup(str);
-	else
-	{
-		new_result = malloc(*res_len + ft_strlen(str) + 1);
-		if (!new_result)
-		{
-			free(result);
-			free(str);
-			return (NULL);
-		}
-		j = 0;
-		while (result[j])
-		{
-			new_result[j] = result[j];
-			j++;
-		}
-		k = 0;
-		while (str[k])
-			new_result[j++] = str[k++];
-		new_result[j] = '\0';
-		free(result);
-	}
-	*res_len = ft_strlen(new_result);
-	free(str);
-	return (new_result);
-}
-
-static char	*process_variable(char *str, int *i, t_shell *shell,
+char	*process_variable(char *str, int *i, t_shell *shell,
 		t_quote_state *state)
 {
 	int		var_len;
@@ -168,30 +125,4 @@ char	*expand_variables(char *str, t_shell *shell)
 	if (!result)
 		return (ft_strdup(""));
 	return (result);
-}
-
-void	expand_tokens(t_token *tokens, t_shell *shell)
-{
-	t_token	*current;
-	char	*expanded;
-
-	current = tokens;
-	while (current)
-	{
-		if (current->type == TOKEN_WORD && current->quote != QUOTE_SINGLE)
-		{
-			expanded = expand_variables(current->value, shell);
-			if (expanded)
-			{
-				free(current->value);
-				current->value = expanded;
-			}
-		}
-		else if (current->type == TOKEN_REDIR_HEREDOC)
-		{
-			current = current->next;
-			continue ;
-		}
-		current = current->next;
-	}
 }

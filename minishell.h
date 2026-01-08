@@ -118,15 +118,27 @@ size_t					ft_strlen(const char *str);
 int						ft_isalpha(char c);
 int						ft_isalnum(int c);
 
-// --- tokenizer.c ---
+// --- tokenizer/tokenizer.c ---
 t_token					*tokenize(char *input);
-void					free_tokens(t_token *tokens);
-void					print_tokens(t_token *tokens);
-int						handle_syntax_error(char *value);
 
-// --- tokenizer_utils.c ---
+// --- tokenizer/tokenizer_token_utils.c ---
 t_token					*create_token(t_token_type type, char *value);
 void					add_token(t_token **head, t_token *new_token);
+void					free_tokens(t_token *tokens);
+void					print_tokens(t_token *tokens);
+
+// --- tokenizer/tokenizer_error.c ---
+int						handle_syntax_error(char *value);
+
+// --- tokenizer/tokenizer_parse_utils.c ---
+int						is_special(char c);
+void					skip_space(char **str);
+char					*get_word(char **str);
+t_token					*tokenize_special(char **str);
+
+// --- tokenizer/tokenizer_quote_utils.c ---
+t_quote_type			get_quote_type(char *raw);
+char					*strip_quotes(char *raw);
 
 // --- parser.c ---
 t_cmd					*parse(t_token *tokens);
@@ -151,13 +163,21 @@ void					ft_lstadd_back(t_list **lst, t_list *new_node);
 int						ft_lstsize(t_list *lst);
 void					ft_lstclear(t_list **lst, void (*del)(void *));
 
-// --- expander.c ---
-void					update_quote_state(char c, t_quote_state *state);
+// --- expander/expander.c ---
+void					expand_tokens(t_token *tokens, t_shell *shell);
+
+// --- expander/expander_variable.c ---
 int						get_var_name_len(char *str);
 char					*get_env_value(char *var_name, int var_len,
 							t_shell *shell);
+char					*process_variable(char *str, int *i, t_shell *shell,
+							t_quote_state *state);
 char					*expand_variables(char *str, t_shell *shell);
-void					expand_tokens(t_token *tokens, t_shell *shell);
+
+// --- expander/expander_utils.c ---
+void					update_quote_state(char c, t_quote_state *state);
+char					*append_str(char *result, char *str, int *i,
+							int *res_len);
 
 // --- signal_handlers.c ---
 void					handle_sigint_interactive(int sig);

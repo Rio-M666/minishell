@@ -42,6 +42,7 @@ static void	process_input(char *input, t_shell *shell)
 	free_pipeline(pipeline);
 }
 
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
