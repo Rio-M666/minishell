@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer_parse_utils.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/09 13:16:17 by mrio              #+#    #+#             */
+/*   Updated: 2026/01/09 13:16:18 by mrio             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_special(char c)
@@ -19,7 +31,7 @@ char	*get_word(char **str)
 
 	start = *str;
 	len = 0;
-	while ((*str)[len] && !is_special((*str)[len]) && (*str)[len] != ' ' \
+	while ((*str)[len] && !is_special((*str)[len]) && (*str)[len] != ' '
 		&& (*str)[len] != '\t')
 	{
 		if ((*str)[len] == '\'' || (*str)[len] == '"')

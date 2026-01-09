@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer_token_utils.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/09 13:16:04 by mrio              #+#    #+#             */
+/*   Updated: 2026/01/09 13:16:06 by mrio             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_token	*create_token(t_token_type type, char *value)
@@ -49,7 +61,7 @@ void	free_tokens(t_token *tokens)
 void	print_tokens(t_token *tokens)
 {
 	const char	*type_names[] = {"WORD", "PIPE", "REDIR_IN", "REDIR_OUT",
-		"REDIR_APPEND", "REDIR_HEREDOC"};
+			"REDIR_APPEND", "REDIR_HEREDOC"};
 
 	printf("\n=== TOKENS ===\n");
 	while (tokens)
