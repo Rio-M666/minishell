@@ -6,7 +6,15 @@ INCLUDES = -I./includes
 LDFLAGS = -lreadline
 
 
-SRCS = main.c execute.c utils.c path.c tokenizer.c pipe.c signal_handlers.c expander.c heredoc.c
+SRCS = main.c execute.c utils.c path.c pipe.c signal_handlers.c heredoc.c
+SRCS += tokenizer/tokenizer.c \
+		tokenizer/tokenizer_token_utils.c \
+		tokenizer/tokenizer_parse_utils.c \
+		tokenizer/tokenizer_quote_utils.c \
+		tokenizer/tokenizer_error.c
+SRCS += expander/expander.c \
+		expander/expander_variable.c \
+		expander/expander_utils.c
 SRCS += parser/parser.c \
 		parser/parser_utils.c \
 		parser/parser_list_utils.c \

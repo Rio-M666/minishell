@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/09 13:15:13 by mrio              #+#    #+#             */
+/*   Updated: 2026/01/09 13:15:25 by mrio             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 size_t	ft_strlen(const char *str)
@@ -125,8 +137,8 @@ int	ft_isalpha(char c)
 }
 int	ft_isalnum(int c)
 {
-	return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
-		|| (c >= 'A' && c <= 'Z'));
+	return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A'
+			&& c <= 'Z'));
 }
 char	**split_sub(char **str, char const *s, char c)
 {
@@ -190,8 +202,8 @@ void	free_array(char **arr)
 char	**ft_split(char const *s, char c)
 {
 	char	**str;
-	// int		i;
 
+	// int		i;
 	if (!s)
 		return (NULL);
 	// i = 0;

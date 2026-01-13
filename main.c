@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/09 13:15:40 by mrio              #+#    #+#             */
+/*   Updated: 2026/01/09 13:15:41 by mrio             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 volatile sig_atomic_t	g_signal = 0;
@@ -10,23 +22,19 @@ static void	process_input(char *input, t_shell *shell)
 	if (!input || input[0] == '\0')
 		return ;
 	add_history(input);
-	
 	// 1. Tokenize
 	tokens = tokenize(input);
 	if (!tokens)
 		return ;
 	// print_tokens(tokens); // デバッグ用
-
 	// 2. Expand variables
 	expand_tokens(tokens, shell);
-
 	// 3. Parse
 	pipeline = parse(tokens);
 	free_tokens(tokens); // Parseが終わればTokenは不要
 	if (!pipeline)
 		return ;
 	// print_pipeline(pipeline); // デバッグ用
-
 	// 4. Process heredocs
 	if (!process_heredocs(pipeline, shell))
 	{
@@ -34,10 +42,8 @@ static void	process_input(char *input, t_shell *shell)
 		free_pipeline(pipeline);
 		return ;
 	}
-
 	// 5. Execute
 	shell->last_status = execute_pipeline(pipeline, shell);
-
 	cleanup_heredocs(pipeline);
 	free_pipeline(pipeline);
 }
