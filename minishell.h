@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/23 18:53:21 by mrio              #+#    #+#             */
+/*   Updated: 2026/01/23 18:54:58 by mrio             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -15,10 +27,6 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
-
-// ===================================================================
-// 構造体定義
-// ===================================================================
 
 typedef struct s_list
 {
@@ -87,26 +95,27 @@ typedef struct s_quote_state
 	int							in_double;
 }								t_quote_state;
 
-// ===================================================================
-// グローバル変数
-// ===================================================================
+typedef struct s_pipe_ctx
+{
+	int							pipe_fd[2];
+	int							prev_fd[2];
+	int							cmd_count;
+	t_cmd						*current;
+}								t_pipe_ctx;
+
 extern volatile sig_atomic_t	g_signal;
 
-// ===================================================================
-// 関数宣言
-// ===================================================================
-
-// --- execute.c ---
 int								execute_with_args(char **args);
 
-// --- pipe.c ---
 int								execute_pipeline(t_cmd *pipeline,
 									t_shell *shell);
 
-// --- path.c ---
+int								execute_pipeline_cmd(t_pipe_ctx *ctx);
+
+int								apply_redirections(t_redirect *redir_list);
+
 char							*get_command_path(char *cmd);
 
-// --- utils.c ---
 char							**ft_split(char const *s, char c);
 char							*ft_strjoin(char const *s1, char const *s2);
 void							free_array(char **arr);
@@ -120,43 +129,33 @@ int								ft_isalpha(char c);
 int								ft_isalnum(int c);
 int								is_space(char c);
 
-// --- tokenizer/tokenizer.c ---
 t_token							*tokenize(char *input);
 
-// --- tokenizer/tokenizer_token_utils.c ---
 t_token							*create_token(t_token_type type, char *value);
 void							add_token(t_token **head, t_token *new_token);
 void							free_tokens(t_token *tokens);
 void							print_tokens(t_token *tokens);
 
-// --- tokenizer/tokenizer_error.c ---
 int								handle_syntax_error(char *value);
 
-// --- tokenizer/tokenizer_parse_utils.c ---
 int								is_special(char c);
 void							skip_space(char **str);
 char							*get_word(char **str);
 
-// --- tokenizer/tokenizer_special.c ---
 t_token							*tokenize_special(char **str);
 
-// --- tokenizer/tokenizer_quote_utils.c ---
 t_quote_type					get_quote_type(char *raw);
 char							*strip_quotes(char *raw);
 
-// --- parser.c ---
 t_cmd							*parse(t_token *tokens);
 
-// --- parser_redir.c ---
-int								handle_redirection(t_cmd *cmd, t_token **current);
+int								handle_redirection(t_cmd *cmd,
+									t_token **current);
 
-// --- parser_free.c ---
 void							free_pipeline(t_cmd *pipeline);
 
-// --- parser_debug.c ---
 void							print_pipeline(t_cmd *pipeline);
 
-// --- parser_utils.c ---
 t_cmd							*create_cmd(void);
 void							add_cmd_back(t_cmd **list, t_cmd *new_cmd);
 t_redirect						*create_redirect(t_redir_type type,
@@ -165,16 +164,13 @@ void							add_redir_back(t_redirect **list,
 									t_redirect *new_redir);
 char							**convert_list_to_array(t_list *list);
 
-// --- parser_list_utils.c ---
 t_list							*ft_lstnew(void *content);
 void							ft_lstadd_back(t_list **lst, t_list *new_node);
 int								ft_lstsize(t_list *lst);
 void							ft_lstclear(t_list **lst, void (*del)(void *));
 
-// --- expander/expander.c ---
 void							expand_tokens(t_token *tokens, t_shell *shell);
 
-// --- expander/expander_variable.c ---
 int								get_var_name_len(char *str);
 char							*get_env_value(char *var_name, int var_len,
 									t_shell *shell);
@@ -182,24 +178,24 @@ char							*process_variable(char *str, int *i,
 									t_shell *shell, t_quote_state *state);
 char							*expand_variables(char *str, t_shell *shell);
 
-// --- expander/expander_utils.c ---
 void							update_quote_state(char c,
 									t_quote_state *state);
 char							*append_str(char *result, char *str, int *i,
 									int *res_len);
 
-// --- signal_handlers.c ---
 void							handle_sigint_interactive(int sig);
 void							setup_signals_interactive(void);
 void							setup_signals_child(void);
 void							handle_sigint_heredoc(int sig);
 
-// --- heredoc.c ---
 int								process_heredocs(t_cmd *pipeline,
 									t_shell *shell);
 void							cleanup_heredocs(t_cmd *pipeline);
 
-// --- utils.c (追加) ---
+void							setup_signals_heredoc(void);
+int								read_heredoc_content(char *delimiter,
+									int expand, t_shell *shell);
+
 int								ft_strcmp(const char *s1, const char *s2);
 
 #endif

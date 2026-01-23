@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	update_quote_state(char c, t_quote_state *state)
 {
@@ -20,37 +20,44 @@ void	update_quote_state(char c, t_quote_state *state)
 		state->in_double = !state->in_double;
 }
 
-char	*append_str(char *result, char *str, int *i, int *res_len)
+static char	*concat_strings(char *result, char *str, int res_len)
 {
 	char	*new_result;
 	int		j;
 	int		k;
 
+	new_result = malloc(res_len + ft_strlen(str) + 1);
+	if (!new_result)
+	{
+		free(result);
+		free(str);
+		return (NULL);
+	}
+	j = 0;
+	while (result[j])
+	{
+		new_result[j] = result[j];
+		j++;
+	}
+	k = 0;
+	while (str[k])
+		new_result[j++] = str[k++];
+	new_result[j] = '\0';
+	free(result);
+	return (new_result);
+}
+
+char	*append_str(char *result, char *str, int *i, int *res_len)
+{
+	char	*new_result;
+
 	(void)i;
 	if (!result)
 		new_result = ft_strdup(str);
 	else
-	{
-		new_result = malloc(*res_len + ft_strlen(str) + 1);
-		if (!new_result)
-		{
-			free(result);
-			free(str);
-			return (NULL);
-		}
-		j = 0;
-		while (result[j])
-		{
-			new_result[j] = result[j];
-			j++;
-		}
-		k = 0;
-		while (str[k])
-			new_result[j++] = str[k++];
-		new_result[j] = '\0';
-		free(result);
-	}
-	*res_len = ft_strlen(new_result);
+		new_result = concat_strings(result, str, *res_len);
+	if (new_result)
+		*res_len = ft_strlen(new_result);
 	free(str);
 	return (new_result);
 }

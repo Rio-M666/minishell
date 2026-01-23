@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	get_var_name_len(char *str)
 {
@@ -26,22 +26,26 @@ int	get_var_name_len(char *str)
 	return (len);
 }
 
+static char	*get_exit_status(t_shell *shell)
+{
+	char	*status_str;
+	int		status;
+
+	status = shell->last_status;
+	status_str = malloc(12);
+	if (!status_str)
+		return (ft_strdup(""));
+	snprintf(status_str, 12, "%d", status);
+	return (status_str);
+}
+
 char	*get_env_value(char *var_name, int var_len, t_shell *shell)
 {
 	char	*env_var;
 	char	*value;
-	char	*status_str;
-	int		status;
 
 	if (var_len == 1 && var_name[0] == '?')
-	{
-		status = shell->last_status;
-		status_str = malloc(12);
-		if (!status_str)
-			return (ft_strdup(""));
-		snprintf(status_str, 12, "%d", status);
-		return (status_str);
-	}
+		return (get_exit_status(shell));
 	env_var = ft_substr(var_name, 0, var_len);
 	if (!env_var)
 		return (ft_strdup(""));
@@ -52,77 +56,30 @@ char	*get_env_value(char *var_name, int var_len, t_shell *shell)
 	return (ft_strdup(value));
 }
 
-char	*process_variable(char *str, int *i, t_shell *shell,
-		t_quote_state *state)
+static char	*make_dollar_str(void)
+{
+	char	*value;
+
+	value = malloc(2);
+	if (!value)
+		return (NULL);
+	value[0] = '$';
+	value[1] = '\0';
+	return (value);
+}
+
+char	*process_variable(char *str, int *i, t_shell *shell, t_quote_state *st)
 {
 	int		var_len;
 	char	*value;
 
 	(*i)++;
-	if (state->in_single)
-	{
-		value = malloc(2);
-		if (!value)
-			return (NULL);
-		value[0] = '$';
-		value[1] = '\0';
-		return (value);
-	}
+	if (st->in_single)
+		return (make_dollar_str());
 	var_len = get_var_name_len(str + *i);
 	if (var_len == 0)
-	{
-		value = malloc(2);
-		if (!value)
-			return (NULL);
-		value[0] = '$';
-		value[1] = '\0';
-		return (value);
-	}
+		return (make_dollar_str());
 	value = get_env_value(str + *i, var_len, shell);
 	*i += var_len - 1;
 	return (value);
-}
-
-char	*expand_variables(char *str, t_shell *shell)
-{
-	char			*result;
-	t_quote_state	state;
-	int				i;
-	int				res_len;
-	char			*temp;
-
-	result = NULL;
-	state.in_single = 0;
-	state.in_double = 0;
-	i = 0;
-	res_len = 0;
-	while (str[i])
-	{
-		update_quote_state(str[i], &state);
-		if (str[i] == '$' && str[i + 1])
-		{
-			temp = process_variable(str, &i, shell, &state);
-			if (!temp)
-				return (result);
-			result = append_str(result, temp, &i, &res_len);
-		}
-		else
-		{
-			temp = malloc(2);
-			if (!temp)
-			{
-				free(result);
-				return (NULL);
-			}
-			temp[0] = str[i];
-			temp[1] = '\0';
-			result = append_str(result, temp, &i, &res_len);
-		}
-		if (!result)
-			return (NULL);
-		i++;
-	}
-	if (!result)
-		return (ft_strdup(""));
-	return (result);
 }
