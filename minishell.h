@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/23 18:53:21 by mrio              #+#    #+#             */
-/*   Updated: 2026/01/23 18:54:58 by mrio             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -28,17 +16,13 @@
 # include <termios.h>
 # include <unistd.h>
 
-typedef struct s_list
-{
-	void						*content;
-	struct s_list				*next;
-}								t_list;
+/* ========== DATA STRUCTURES ========== */
 
 typedef struct s_shell
 {
-	char						**envp;
-	int							last_status;
-}								t_shell;
+	char	**envp;
+	int		last_status;
+}	t_shell;
 
 typedef enum e_token_type
 {
@@ -48,22 +32,22 @@ typedef enum e_token_type
 	TOKEN_REDIR_OUT,
 	TOKEN_REDIR_APPEND,
 	TOKEN_REDIR_HEREDOC,
-}								t_token_type;
+}	t_token_type;
 
 typedef enum e_quote_type
 {
 	QUOTE_NONE,
 	QUOTE_SINGLE,
 	QUOTE_DOUBLE,
-}								t_quote_type;
+}	t_quote_type;
 
 typedef struct s_token
 {
-	t_token_type				type;
-	char						*value;
-	t_quote_type				quote;
-	struct s_token				*next;
-}								t_token;
+	t_token_type	type;
+	char			*value;
+	t_quote_type	quote;
+	struct s_token	*next;
+}	t_token;
 
 typedef enum e_redir_type
 {
@@ -71,131 +55,68 @@ typedef enum e_redir_type
 	REDIR_OUT,
 	REDIR_APPEND,
 	REDIR_HEREDOC
-}								t_redir_type;
+}	t_redir_type;
 
 typedef struct s_redirect
 {
-	t_redir_type				type;
-	char						*filename;
-	int							heredoc_fd;
-	int							expand_heredoc;
-	struct s_redirect			*next;
-}								t_redirect;
+	t_redir_type		type;
+	char				*filename;
+	int					heredoc_fd;
+	int					expand_heredoc;
+	struct s_redirect	*next;
+}	t_redirect;
 
 typedef struct s_cmd
 {
-	char						**args;
-	t_redirect					*redir_list;
-	struct s_cmd				*next;
-}								t_cmd;
+	char			**args;
+	t_redirect		*redir_list;
+	struct s_cmd	*next;
+}	t_cmd;
 
-typedef struct s_quote_state
-{
-	int							in_single;
-	int							in_double;
-}								t_quote_state;
-
-typedef struct s_pipe_ctx
-{
-	int							pipe_fd[2];
-	int							prev_fd[2];
-	int							cmd_count;
-	t_cmd						*current;
-}								t_pipe_ctx;
+/* ========== GLOBAL VARIABLE ========== */
 
 extern volatile sig_atomic_t	g_signal;
 
-int								execute_with_args(char **args);
+/* ========== UTILS (utils.c) ========== */
 
-int								execute_pipeline(t_cmd *pipeline,
-									t_shell *shell);
+size_t	ft_strlen(const char *str);
+char	*ft_strdup(const char *s);
+char	*ft_strchr(const char *str, int c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strjoin(char const *s1, char const *s2);
+char	**ft_split(char const *s, char c);
+void	ft_putstr_fd(char *s, int fd);
+int		ft_strcmp(const char *s1, const char *s2);
+int		ft_isalpha(char c);
+int		ft_isalnum(int c);
+int		is_space(char c);
+void	free_array(char **arr);
 
-int								execute_pipeline_cmd(t_pipe_ctx *ctx);
+/* ========== TOKENIZER (tokenizer.c) ========== */
 
-int								apply_redirections(t_redirect *redir_list);
+t_token	*tokenize(char *input);
+void	free_tokens(t_token *tokens);
 
-char							*get_command_path(char *cmd);
+/* ========== PARSER (parser.c) ========== */
 
-char							**ft_split(char const *s, char c);
-char							*ft_strjoin(char const *s1, char const *s2);
-void							free_array(char **arr);
-char							*ft_strchr(const char *str, int c);
-char							*ft_strdup(const char *s);
-void							ft_putstr_fd(char *s, int fd);
-char							*ft_substr(char const *s, unsigned int start,
-									size_t len);
-size_t							ft_strlen(const char *str);
-int								ft_isalpha(char c);
-int								ft_isalnum(int c);
-int								is_space(char c);
+t_cmd	*parse(t_token *tokens);
+void	free_pipeline(t_cmd *pipeline);
 
-t_token							*tokenize(char *input);
+/* ========== EXPANDER (expander.c) ========== */
 
-t_token							*create_token(t_token_type type, char *value);
-void							add_token(t_token **head, t_token *new_token);
-void							free_tokens(t_token *tokens);
-void							print_tokens(t_token *tokens);
+void	expand_tokens(t_token *tokens, t_shell *shell);
+char	*expand_variables(char *str, t_shell *shell);
 
-int								handle_syntax_error(char *value);
+/* ========== EXECUTE (execute.c) ========== */
 
-int								is_special(char c);
-void							skip_space(char **str);
-char							*get_word(char **str);
+int		execute_pipeline(t_cmd *pipeline, t_shell *shell);
+int		process_heredocs(t_cmd *pipeline, t_shell *shell);
+void	cleanup_heredocs(t_cmd *pipeline);
 
-t_token							*tokenize_special(char **str);
+/* ========== SIGNALS (main.c) ========== */
 
-t_quote_type					get_quote_type(char *raw);
-char							*strip_quotes(char *raw);
-
-t_cmd							*parse(t_token *tokens);
-
-int								handle_redirection(t_cmd *cmd,
-									t_token **current);
-
-void							free_pipeline(t_cmd *pipeline);
-
-void							print_pipeline(t_cmd *pipeline);
-
-t_cmd							*create_cmd(void);
-void							add_cmd_back(t_cmd **list, t_cmd *new_cmd);
-t_redirect						*create_redirect(t_redir_type type,
-									char *filename);
-void							add_redir_back(t_redirect **list,
-									t_redirect *new_redir);
-char							**convert_list_to_array(t_list *list);
-
-t_list							*ft_lstnew(void *content);
-void							ft_lstadd_back(t_list **lst, t_list *new_node);
-int								ft_lstsize(t_list *lst);
-void							ft_lstclear(t_list **lst, void (*del)(void *));
-
-void							expand_tokens(t_token *tokens, t_shell *shell);
-
-int								get_var_name_len(char *str);
-char							*get_env_value(char *var_name, int var_len,
-									t_shell *shell);
-char							*process_variable(char *str, int *i,
-									t_shell *shell, t_quote_state *state);
-char							*expand_variables(char *str, t_shell *shell);
-
-void							update_quote_state(char c,
-									t_quote_state *state);
-char							*append_str(char *result, char *str, int *i,
-									int *res_len);
-
-void							handle_sigint_interactive(int sig);
-void							setup_signals_interactive(void);
-void							setup_signals_child(void);
-void							handle_sigint_heredoc(int sig);
-
-int								process_heredocs(t_cmd *pipeline,
-									t_shell *shell);
-void							cleanup_heredocs(t_cmd *pipeline);
-
-void							setup_signals_heredoc(void);
-int								read_heredoc_content(char *delimiter,
-									int expand, t_shell *shell);
-
-int								ft_strcmp(const char *s1, const char *s2);
+void	setup_signals_interactive(void);
+void	setup_signals_child(void);
+void	handle_sigint_heredoc(int sig);
 
 #endif
