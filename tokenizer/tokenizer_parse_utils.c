@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 13:16:17 by mrio              #+#    #+#             */
-/*   Updated: 2026/01/09 13:16:18 by mrio             ###   ########.fr       */
+/*   Created: 2026/01/23 16:20:12 by mrio              #+#    #+#             */
+/*   Updated: 2026/01/23 16:22:35 by mrio             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,26 @@ void	skip_space(char **str)
 		(*str)++;
 }
 
+static int	skip_quoted(char *s, int len)
+{
+	char	quote_char;
+
+	quote_char = s[len];
+	len++;
+	while (s[len] && s[len] != quote_char)
+		len++;
+	if (!s[len])
+	{
+		handle_syntax_error("newline");
+		return (-1);
+	}
+	return (len + 1);
+}
+
 char	*get_word(char **str)
 {
 	char	*s;
 	int		len;
-	char	quote_char;
 
 	s = *str;
 	len = 0;
@@ -35,66 +50,13 @@ char	*get_word(char **str)
 	{
 		if (s[len] == '\'' || s[len] == '"')
 		{
-			quote_char = s[len];
-			len++;
-			while (s[len] && s[len] != quote_char)
-				len++;
-			if (!s[len])
-			{
-				handle_syntax_error("newline");
+			len = skip_quoted(s, len);
+			if (len == -1)
 				return (NULL);
-			}
-			len++;
 		}
 		else
 			len++;
 	}
 	*str += len;
 	return (ft_substr(s, 0, len));
-}
-
-t_token	*tokenize_special(char **str)
-{
-	t_token_type	type;
-	char			*value;
-
-	if (**str == '|')
-	{
-		type = TOKEN_PIPE;
-		value = ft_strdup("|");
-		(*str)++;
-	}
-	else if (**str == '<')
-	{
-		if (*(*str + 1) == '<')
-		{
-			type = TOKEN_REDIR_HEREDOC;
-			value = ft_strdup("<<");
-			(*str) += 2;
-		}
-		else
-		{
-			type = TOKEN_REDIR_IN;
-			value = ft_strdup("<");
-			(*str)++;
-		}
-	}
-	else if (**str == '>')
-	{
-		if (*(*str + 1) == '>')
-		{
-			type = TOKEN_REDIR_APPEND;
-			value = ft_strdup(">>");
-			(*str) += 2;
-		}
-		else
-		{
-			type = TOKEN_REDIR_OUT;
-			value = ft_strdup(">");
-			(*str)++;
-		}
-	}
-	else
-		return (NULL);
-	return (create_token(type, value));
 }

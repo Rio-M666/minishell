@@ -136,6 +136,8 @@ int								handle_syntax_error(char *value);
 int								is_special(char c);
 void							skip_space(char **str);
 char							*get_word(char **str);
+
+// --- tokenizer/tokenizer_special.c ---
 t_token							*tokenize_special(char **str);
 
 // --- tokenizer/tokenizer_quote_utils.c ---
