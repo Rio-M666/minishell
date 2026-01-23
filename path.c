@@ -6,7 +6,7 @@
 /*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 17:54:24 by mrio              #+#    #+#             */
-/*   Updated: 2025/12/05 17:54:28 by mrio             ###   ########.fr       */
+/*   Updated: 2026/01/23 15:38:02 by mrio             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,7 @@ char	*find_path(char *cmd)
 		full_path = ft_strjoin(tmp, cmd);
 		free(tmp);
 		if (access(full_path, X_OK) == 0)
-		{
-			free_array(paths);
-			return (full_path);
-		}
+			return (free_array(paths), full_path);
 		free(full_path);
 		i++;
 	}

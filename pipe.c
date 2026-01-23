@@ -6,7 +6,7 @@
 /*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 17:36:08 by mrio              #+#    #+#             */
-/*   Updated: 2025/12/05 18:13:14 by mrio             ###   ########.fr       */
+/*   Updated: 2026/01/23 15:41:23 by mrio             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ static int	apply_redirections(t_redirect *redir_list)
 		{
 			if (redir->heredoc_fd == -1)
 			{
-				ft_putstr_fd("minishell: heredoc: invalid file descriptor\n", 2);
+				ft_putstr_fd("minishell: heredoc: invalid file descriptor\n",
+					2);
 				return (0);
 			}
 			dup2(redir->heredoc_fd, STDIN_FILENO);

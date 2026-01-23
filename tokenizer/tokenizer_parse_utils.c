@@ -25,22 +25,21 @@ void	skip_space(char **str)
 
 char	*get_word(char **str)
 {
-	char	*start;
+	char	*s;
 	int		len;
 	char	quote_char;
 
-	start = *str;
+	s = *str;
 	len = 0;
-	while ((*str)[len] && !is_special((*str)[len]) && (*str)[len] != ' '
-		&& (*str)[len] != '\t')
+	while (s[len] && !is_special(s[len]) && !is_space(s[len]))
 	{
-		if ((*str)[len] == '\'' || (*str)[len] == '"')
+		if (s[len] == '\'' || s[len] == '"')
 		{
-			quote_char = (*str)[len];
+			quote_char = s[len];
 			len++;
-			while ((*str)[len] && (*str)[len] != quote_char)
+			while (s[len] && s[len] != quote_char)
 				len++;
-			if (!(*str)[len])
+			if (!s[len])
 			{
 				handle_syntax_error("newline");
 				return (NULL);
@@ -51,7 +50,7 @@ char	*get_word(char **str)
 			len++;
 	}
 	*str += len;
-	return (ft_substr(start, 0, len));
+	return (ft_substr(s, 0, len));
 }
 
 t_token	*tokenize_special(char **str)
