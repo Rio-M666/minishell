@@ -20,6 +20,14 @@ SRCS += parser/parser.c \
 		parser/parser_list_utils.c \
 		parser/parser_free.c \
 		parser/parser_debug.c
+SRCS += env/env_manager.c
+SRCS += builtins/ft_cd.c \
+		builtins/ft_echo.c \
+		builtins/ft_pwd.c \
+		builtins/ft_export.c \
+		bulitins/ft_unset.c \
+		builtins/ft_env.c \
+		builtins/ft_exit.c
 
 
 # Object files

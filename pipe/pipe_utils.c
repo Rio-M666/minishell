@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: toyamagu <toyamagu@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 17:36:08 by mrio              #+#    #+#             */
-/*   Updated: 2026/01/23 15:41:23 by mrio             ###   ########.fr       */
+/*   Updated: 2026/01/25 00:24:52 by toyamagu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	execute_child_cmd(t_cmd *cmd, char *cmd_path)
 	exit(126);
 }
 
-static void	child_process(t_pipe_ctx *ctx)
+static void	child_process(t_pipe_ctx *ctx, t_shell *shell)
 {
 	char	*cmd_path;
 	int		is_last;
@@ -48,6 +48,10 @@ static void	child_process(t_pipe_ctx *ctx)
 	setup_child_pipes(ctx, is_last);
 	if (!apply_redirections(ctx->current->redir_list))
 		exit(1);
+	if (!ctx->current->args || !ctx->current->args[0])
+		exit(0);
+	if (is_builtin(ctx->current->args[0]))
+		exit(exec_builtin(ctx->current, shell));
 	cmd_path = get_command_path(ctx->current->args[0]);
 	if (!cmd_path)
 	{
@@ -73,7 +77,7 @@ static void	parent_process(t_pipe_ctx *ctx)
 	}
 }
 
-int	execute_pipeline_cmd(t_pipe_ctx *ctx)
+int	execute_pipeline_cmd(t_pipe_ctx *ctx, t_shell *shell)
 {
 	pid_t	pid;
 
@@ -92,7 +96,7 @@ int	execute_pipeline_cmd(t_pipe_ctx *ctx)
 		return (-1);
 	}
 	if (pid == 0)
-		child_process(ctx);
+		child_process(ctx, shell);
 	parent_process(ctx);
 	return (0);
 }
