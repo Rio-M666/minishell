@@ -109,10 +109,9 @@ int								execute_with_args(char **args);
 
 int								execute_pipeline(t_cmd *pipeline,
 									t_shell *shell);
-int								is_bulitin(char *cmd);
-int 							exec_bulitin(t_cmd *cmd, t_shell *shell);
 
-int								execute_pipeline_cmd(t_pipe_ctx *ctx, t_shell *shell);
+int								execute_pipeline_cmd(t_pipe_ctx *ctx,
+									t_shell *shell);
 
 int								apply_redirections(t_redirect *redir_list);
 
@@ -129,6 +128,8 @@ char							*ft_substr(char const *s, unsigned int start,
 size_t							ft_strlen(const char *str);
 int								ft_isalpha(char c);
 int								ft_isalnum(int c);
+int								ft_isdigit(int c);
+int								ft_atoi(const char *str);
 int								is_space(char c);
 
 t_token							*tokenize(char *input);
@@ -203,6 +204,7 @@ char							**init_envp(char **envp);
 char							*ft_getenv(char *key, t_shell *shell);
 int								ft_setenv(char *key, char *value,
 									t_shell *shell);
+void							ft_unset_env(char *key, t_shell *shell);
 
 /* --- builtins/ --- */
 int								ft_echo(char **args);
@@ -217,5 +219,7 @@ int								is_builtin(char *cmd);
 int								exec_builtin(t_cmd *cmd, t_shell *shell);
 
 int								ft_strcmp(const char *s1, const char *s2);
+int								ft_strncmp(const char *s1, const char *s2,
+									size_t n);
 
 #endif

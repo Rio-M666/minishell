@@ -96,6 +96,35 @@ int	ft_setenv(char *key, char *value, t_shell *shell)
 	return (add_env_entry(shell, new_entry));
 }
 
+void	ft_unset_env(char *key, t_shell *shell)
+{
+	int		i;
+	int		j;
+	size_t	len;
+
+	if (!key || !shell->envp)
+		return ;
+	len = ft_strlen(key);
+	i = 0;
+	while (shell->envp[i])
+	{
+		if (ft_strncmp(shell->envp[i], key, len) == 0
+			&& (shell->envp[i][len] == '=' || shell->envp[i][len] == '\0'))
+		{
+			free(shell->envp[i]);
+			j = i;
+			while (shell->envp[j + 1])
+			{
+				shell->envp[j] = shell->envp[j + 1];
+				j++;
+			}
+			shell->envp[j] = NULL;
+			return ;
+		}
+		i++;
+	}
+}
+
 char	**init_envp(char **envp)
 {
 	int i;

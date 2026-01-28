@@ -12,26 +12,9 @@
 
 #include "minishell.h"
 
-static int	update_env(t_shell *shell, char *old_pwd)
-{
-	char	new_pwd[1024];
-
-	if (getcwd(new_pwd, sizeof(new_pwd)) == NULL)
-	{
-		perror("minishell: cd: getcwd");
-		return (1);
-	}
-	if (ft_setenv("OLDPWD", old_pwd, shell) != 0)
-		return (1);
-	if (ft_setenv("PWD", new_pwd, shell) != 0)
-		return (1);
-	return (0);
-}
-
 int	ft_cd(char **args, t_shell *shell)
 {
 	char	*path;
-    char old_pwd[1024];
 
 	if (!args[1])
 	{
