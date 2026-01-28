@@ -6,20 +6,39 @@ INCLUDES = -I./includes
 LDFLAGS = -lreadline
 
 
-SRCS = main.c execute.c utils.c path.c pipe.c signal_handlers.c heredoc.c
+SRCS = main.c execute.c path.c signal_handlers.c
+SRCS += utils/utils.c \
+		utils/utils_split.c \
+		utils/utils_str.c \
+		utils/ft_strncmp.c
+SRCS += pipe/pipe.c \
+		pipe/pipe_utils.c \
+		pipe/pipe_redir.c
+SRCS += heredoc/heredoc.c \
+		heredoc/heredoc_utils.c
 SRCS += tokenizer/tokenizer.c \
 		tokenizer/tokenizer_token_utils.c \
 		tokenizer/tokenizer_parse_utils.c \
 		tokenizer/tokenizer_quote_utils.c \
-		tokenizer/tokenizer_error.c
+		tokenizer/tokenizer_error.c \
+		tokenizer/tokenizer_special.c
 SRCS += expander/expander.c \
 		expander/expander_variable.c \
-		expander/expander_utils.c
+		expander/expander_utils.c \
+		expander/expander_expand.c
 SRCS += parser/parser.c \
 		parser/parser_utils.c \
 		parser/parser_list_utils.c \
 		parser/parser_free.c \
-		parser/parser_debug.c
+		parser/parser_redir.c
+SRCS += env/env_manager.c
+SRCS += builtins/ft_cd.c \
+		builtins/ft_echo.c \
+		builtins/ft_pwd.c \
+		builtins/ft_export.c \
+		builtins/ft_unset.c \
+		builtins/ft_env.c \
+		builtins/ft_exit.c
 
 
 # Object files

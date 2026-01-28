@@ -49,7 +49,7 @@ char	*get_env_value(char *var_name, int var_len, t_shell *shell)
 	env_var = ft_substr(var_name, 0, var_len);
 	if (!env_var)
 		return (ft_strdup(""));
-	value = getenv(env_var);
+	value = ft_getenv(env_var, shell);
 	free(env_var);
 	if (!value)
 		return (ft_strdup(""));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: toyamagu <toyamagu@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:53:21 by mrio              #+#    #+#             */
-/*   Updated: 2026/01/23 18:54:58 by mrio             ###   ########.fr       */
+/*   Updated: 2026/01/25 00:28:33 by toyamagu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,8 @@ int								execute_with_args(char **args);
 int								execute_pipeline(t_cmd *pipeline,
 									t_shell *shell);
 
-int								execute_pipeline_cmd(t_pipe_ctx *ctx);
+int								execute_pipeline_cmd(t_pipe_ctx *ctx,
+									t_shell *shell);
 
 int								apply_redirections(t_redirect *redir_list);
 
@@ -127,6 +128,8 @@ char							*ft_substr(char const *s, unsigned int start,
 size_t							ft_strlen(const char *str);
 int								ft_isalpha(char c);
 int								ft_isalnum(int c);
+int								ft_isdigit(int c);
+int								ft_atoi(const char *str);
 int								is_space(char c);
 
 t_token							*tokenize(char *input);
@@ -196,6 +199,27 @@ void							setup_signals_heredoc(void);
 int								read_heredoc_content(char *delimiter,
 									int expand, t_shell *shell);
 
+/*---env/env_manager.c*/
+char							**init_envp(char **envp);
+char							*ft_getenv(char *key, t_shell *shell);
+int								ft_setenv(char *key, char *value,
+									t_shell *shell);
+void							ft_unset_env(char *key, t_shell *shell);
+
+/* --- builtins/ --- */
+int								ft_echo(char **args);
+int								ft_cd(char **args, t_shell *shell);
+int								ft_pwd(void);
+int								ft_export(char **args, t_shell *shell);
+int								ft_unset(char **args, t_shell *shell);
+int								ft_env(t_shell *shell);
+int								ft_exit(char **args, t_shell *shell);
+
+int								is_builtin(char *cmd);
+int								exec_builtin(t_cmd *cmd, t_shell *shell);
+
 int								ft_strcmp(const char *s1, const char *s2);
+int								ft_strncmp(const char *s1, const char *s2,
+									size_t n);
 
 #endif
