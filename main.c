@@ -48,7 +48,7 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	shell.envp = envp;
+	shell.envp = init_envp(envp);
 	shell.last_status = 0;
 	setup_signals_interactive();
 	while (1)
