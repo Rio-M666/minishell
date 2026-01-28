@@ -61,7 +61,7 @@ void	free_tokens(t_token *tokens)
 void	print_tokens(t_token *tokens)
 {
 	const char	*type_names[] = {"WORD", "PIPE", "REDIR_IN", "REDIR_OUT",
-			"REDIR_APPEND", "REDIR_HEREDOC"};
+		"REDIR_APPEND", "REDIR_HEREDOC"};
 
 	printf("\n=== TOKENS ===\n");
 	while (tokens)

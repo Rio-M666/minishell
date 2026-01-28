@@ -57,22 +57,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (str);
 }
 
-int	ft_isalpha(char c)
-{
-	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
-}
-
-int	ft_isalnum(int c)
-{
-	return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
-		|| (c >= 'A' && c <= 'Z'));
-}
-
-int	ft_isdigit(int c)
-{
-	return (c >= '0' && c <= '9');
-}
-
 int	ft_atoi(const char *str)
 {
 	int	result;
@@ -94,9 +78,4 @@ int	ft_atoi(const char *str)
 		str++;
 	}
 	return (result * sign);
-}
-
-int	is_space(char c)
-{
-	return (c == ' ' || c == '\t');
 }

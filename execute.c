@@ -34,7 +34,16 @@ static int	parent_wait(char *cmd_path, pid_t pid)
 	int	status;
 
 	free(cmd_path);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, 0);
+	setup_signals_interactive();
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT || WTERMSIG(status) == SIGQUIT)
+			write(1, "\n", 1);
+		return (128 + WTERMSIG(status));
+	}
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);

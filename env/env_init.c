@@ -1,26 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   env_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: toyamagu <toyamagu@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/25 00:01:36 by toyamagu          #+#    #+#             */
-/*   Updated: 2026/01/25 00:01:54 by toyamagu         ###   ########.fr       */
+/*   Created: 2026/01/28 16:00:00 by toyamagu          #+#    #+#             */
+/*   Updated: 2026/01/28 16:00:00 by toyamagu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(t_shell *shell)
+char	**init_envp(char **envp)
 {
-	int	i;
+	int		i;
+	int		count;
+	char	**new_envp;
 
+	count = count_env(envp);
+	new_envp = malloc(sizeof(char *) * (count + 1));
+	if (!new_envp)
+		return (NULL);
 	i = 0;
-	while (shell->envp[i])
+	while (i < count)
 	{
-		printf("%s\n", shell->envp[i]);
+		new_envp[i] = ft_strdup(envp[i]);
+		if (!new_envp[i])
+		{
+			free_array(new_envp);
+			return (NULL);
+		}
 		i++;
 	}
-	return (0);
+	new_envp[i] = NULL;
+	return (new_envp);
 }

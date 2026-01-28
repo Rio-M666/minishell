@@ -3,14 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: toyamagu <toyamagu@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 23:57:58 by toyamagu          #+#    #+#             */
-/*   Updated: 2026/01/25 00:13:04 by toyamagu         ###   ########.fr       */
+/*   Updated: 2026/01/28 20:59:45 by mrio             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	update_pwd(t_shell *shell)
+{
+	char	cwd[PATH_MAX];
+	char	*oldpwd;
+
+	oldpwd = ft_getenv("PWD", shell);
+	if (oldpwd)
+		ft_setenv("OLDPWD", oldpwd, shell);
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+		ft_setenv("PWD", cwd, shell);
+	return (0);
+}
 
 int	ft_cd(char **args, t_shell *shell)
 {
@@ -32,6 +45,6 @@ int	ft_cd(char **args, t_shell *shell)
 		perror("minishell: cd");
 		return (1);
 	}
-    
+	update_pwd(shell);
 	return (0);
 }
