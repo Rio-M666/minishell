@@ -20,9 +20,9 @@ static int	add_word_to_list(t_list **arg_list, t_token *current)
 	arg_val = ft_strdup(current->value);
 	new_node = ft_lstnew(arg_val);
 	if (!arg_val || !new_node)
-		return (free(arg_val), 0);
+		return (free(arg_val), 1);
 	ft_lstadd_back(arg_list, new_node);
-	return (1);
+	return (0);
 }
 
 static void	cleanup_parse_cmd(t_list **arg_list, t_cmd *cmd)
@@ -44,11 +44,11 @@ static t_cmd	*parse_simple_command(t_token **tokens)
 	{
 		if (current->type == TOKEN_WORD)
 		{
-			if (!add_word_to_list(&arg_list, current))
+			if (add_word_to_list(&arg_list, current))
 				return (cleanup_parse_cmd(&arg_list, cmd), NULL);
 			current = current->next;
 		}
-		else if (handle_redirection(cmd, &current) == 0)
+		else if (handle_redirection(cmd, &current) != 0)
 			return (cleanup_parse_cmd(&arg_list, cmd), NULL);
 	}
 	cmd->args = convert_list_to_array(arg_list);
@@ -66,9 +66,9 @@ static int	advance_past_pipe(t_token **current)
 			handle_syntax_error((*current)->value);
 		else
 			handle_syntax_error("newline");
-		return (0);
+		return (1);
 	}
-	return (1);
+	return (0);
 }
 
 t_cmd	*parse(t_token *tokens)
@@ -90,7 +90,7 @@ t_cmd	*parse(t_token *tokens)
 			return (free_pipeline(pipeline_head), NULL);
 		add_cmd_back(&pipeline_head, new_cmd);
 		if (current && current->type == TOKEN_PIPE)
-			if (!advance_past_pipe(&current))
+			if (advance_past_pipe(&current))
 				return (free_pipeline(pipeline_head), NULL);
 	}
 	return (pipeline_head);

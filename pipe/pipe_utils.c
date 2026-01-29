@@ -35,7 +35,7 @@ static void	execute_child_cmd(t_cmd *cmd, char *cmd_path)
 	execve(cmd_path, cmd->args, environ);
 	perror("execve");
 	free(cmd_path);
-	exit(126);
+	exit(EXIT_CMD_NOT_EXEC);
 }
 
 static void	child_process(t_pipe_ctx *ctx, t_shell *shell)
@@ -46,7 +46,7 @@ static void	child_process(t_pipe_ctx *ctx, t_shell *shell)
 	is_last = (ctx->current->next == NULL);
 	setup_signals_child();
 	setup_child_pipes(ctx, is_last);
-	if (!apply_redirections(ctx->current->redir_list))
+	if (apply_redirections(ctx->current->redir_list))
 		exit(1);
 	if (!ctx->current->args || !ctx->current->args[0])
 		exit(0);
@@ -55,10 +55,8 @@ static void	child_process(t_pipe_ctx *ctx, t_shell *shell)
 	cmd_path = get_command_path(ctx->current->args[0]);
 	if (!cmd_path)
 	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(ctx->current->args[0], 2);
-		ft_putstr_fd(": command not found\n", 2);
-		exit(127);
+		print_error(ctx->current->args[0], "command not found");
+		exit(EXIT_CMD_NOT_FOUND);
 	}
 	execute_child_cmd(ctx->current, cmd_path);
 }

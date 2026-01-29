@@ -30,9 +30,7 @@ static int	is_valid_identifier(char *str)
 
 static void	print_export_error(char *arg)
 {
-	ft_putstr_fd("minishell: export: `", 2);
-	ft_putstr_fd(arg, 2);
-	ft_putstr_fd("': not a valid identifier\n", 2);
+	print_error_arg("export", arg, "not a valid identifier");
 }
 
 static int	process_export_arg(char *arg, t_shell *shell)

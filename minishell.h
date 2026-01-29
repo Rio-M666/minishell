@@ -28,6 +28,11 @@
 # include <termios.h>
 # include <unistd.h>
 
+# define EXIT_CMD_NOT_FOUND		127
+# define EXIT_CMD_NOT_EXEC		126
+# define EXIT_SIGNAL_BASE		128
+# define DEFAULT_FILE_PERMS		0644
+
 typedef struct s_list
 {
 	void						*content;
@@ -222,5 +227,9 @@ int								exec_builtin(t_cmd *cmd, t_shell *shell);
 int								ft_strcmp(const char *s1, const char *s2);
 int								ft_strncmp(const char *s1, const char *s2,
 									size_t n);
+
+void							print_error(char *cmd, char *msg);
+void							print_error_arg(char *cmd, char *arg,
+									char *msg);
 
 #endif

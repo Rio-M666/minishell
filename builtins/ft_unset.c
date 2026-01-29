@@ -39,9 +39,7 @@ int	ft_unset(char **args, t_shell *shell)
 	{
 		if (!is_valid_key(args[i]))
 		{
-			ft_putstr_fd("minishell: unset: `", 2);
-			ft_putstr_fd(args[i], 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
+			print_error_arg("unset", args[i], "not a valid identifier");
 			status = 1;
 		}
 		else

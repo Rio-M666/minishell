@@ -19,7 +19,7 @@ static int	exec_single_builtin(t_cmd *cmd, t_shell *shell)
 
 	saved_fd[0] = dup(STDIN_FILENO);
 	saved_fd[1] = dup(STDOUT_FILENO);
-	if (apply_redirections(cmd->redir_list))
+	if (!apply_redirections(cmd->redir_list))
 	{
 		status = exec_builtin(cmd, shell);
 		dup2(saved_fd[0], STDIN_FILENO);
@@ -41,7 +41,7 @@ static int	get_last_status(int status)
 	{
 		if (WTERMSIG(status) == SIGINT || WTERMSIG(status) == SIGQUIT)
 			write(1, "\n", 1);
-		return (128 + WTERMSIG(status));
+		return (EXIT_SIGNAL_BASE + WTERMSIG(status));
 	}
 	else if (WIFEXITED(status))
 		return (WEXITSTATUS(status));

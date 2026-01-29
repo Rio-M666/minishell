@@ -30,7 +30,7 @@ static void	process_input(char *input, t_shell *shell)
 	free_tokens(tokens);
 	if (!pipeline)
 		return ;
-	if (!process_heredocs(pipeline, shell))
+	if (process_heredocs(pipeline, shell))
 	{
 		cleanup_heredocs(pipeline);
 		free_pipeline(pipeline);

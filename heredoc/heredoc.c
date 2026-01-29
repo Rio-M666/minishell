@@ -17,12 +17,12 @@ static int	process_single_heredoc(t_redirect *redir, t_shell *shell)
 	int	fd;
 
 	if (redir->type != REDIR_HEREDOC)
-		return (1);
+		return (0);
 	fd = read_heredoc_content(redir->filename, redir->expand_heredoc, shell);
 	if (fd == -1)
-		return (0);
+		return (1);
 	redir->heredoc_fd = fd;
-	return (1);
+	return (0);
 }
 
 int	process_heredocs(t_cmd *pipeline, t_shell *shell)
@@ -38,14 +38,14 @@ int	process_heredocs(t_cmd *pipeline, t_shell *shell)
 		{
 			if (redir->type == REDIR_HEREDOC)
 			{
-				if (!process_single_heredoc(redir, shell))
-					return (0);
+				if (process_single_heredoc(redir, shell))
+					return (1);
 			}
 			redir = redir->next;
 		}
 		cmd = cmd->next;
 	}
-	return (1);
+	return (0);
 }
 
 void	cleanup_heredocs(t_cmd *pipeline)
