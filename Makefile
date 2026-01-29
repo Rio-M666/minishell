@@ -11,6 +11,7 @@ SRCS += utils/utils.c \
 		utils/utils_split.c \
 		utils/utils_str.c \
 		utils/utils_char.c \
+		utils/utils_error.c \
 		utils/ft_strncmp.c
 SRCS += pipe/pipe.c \
 		pipe/pipe_utils.c \

@@ -31,7 +31,8 @@ static int	apply_redir_out(t_redirect *redir)
 {
 	int	fd;
 
-	fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, DEFAULT_FILE_PERMS);
+	fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC,
+			DEFAULT_FILE_PERMS);
 	if (fd == -1)
 	{
 		perror(redir->filename);
@@ -46,7 +47,8 @@ static int	apply_redir_append(t_redirect *redir)
 {
 	int	fd;
 
-	fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, DEFAULT_FILE_PERMS);
+	fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND,
+			DEFAULT_FILE_PERMS);
 	if (fd == -1)
 	{
 		perror(redir->filename);

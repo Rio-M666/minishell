@@ -53,10 +53,12 @@ static int	check_cmd_error(char *cmd)
 			if (S_ISDIR(st.st_mode))
 				return (print_error(cmd, "Is a directory"), EXIT_CMD_NOT_EXEC);
 			if (access(cmd, X_OK) != 0)
-				return (print_error(cmd, "Permission denied"), EXIT_CMD_NOT_EXEC);
+				return (print_error(cmd, "Permission denied"),
+					EXIT_CMD_NOT_EXEC);
 		}
 		else
-			return (print_error(cmd, "No such file or directory"), EXIT_CMD_NOT_FOUND);
+			return (print_error(cmd, "No such file or directory"),
+				EXIT_CMD_NOT_FOUND);
 	}
 	return (print_error(cmd, "command not found"), EXIT_CMD_NOT_FOUND);
 }
