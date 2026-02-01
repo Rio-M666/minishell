@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-// t_redirect リストを解放する
 static void	free_redir_list(t_redirect *list)
 {
 	t_redirect	*current;
@@ -28,7 +27,6 @@ static void	free_redir_list(t_redirect *list)
 	}
 }
 
-// 1つの t_cmd ノードを解放する
 static void	free_cmd(t_cmd *cmd)
 {
 	if (!cmd)
@@ -38,7 +36,6 @@ static void	free_cmd(t_cmd *cmd)
 	free(cmd);
 }
 
-// パイプライン (t_cmd リスト) 全体を解放する
 void	free_pipeline(t_cmd *pipeline)
 {
 	t_cmd	*current;

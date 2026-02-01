@@ -142,7 +142,6 @@ t_token							*tokenize(char *input);
 t_token							*create_token(t_token_type type, char *value);
 void							add_token(t_token **head, t_token *new_token);
 void							free_tokens(t_token *tokens);
-void							print_tokens(t_token *tokens);
 
 int								handle_syntax_error(char *value);
 

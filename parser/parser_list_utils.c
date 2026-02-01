@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-// 新しい t_list ノードを作成する
 t_list	*ft_lstnew(void *content)
 {
 	t_list	*new_node;
@@ -25,7 +24,6 @@ t_list	*ft_lstnew(void *content)
 	return (new_node);
 }
 
-// t_list の末尾にノードを追加する
 void	ft_lstadd_back(t_list **lst, t_list *new_node)
 {
 	t_list	*current;
@@ -43,7 +41,6 @@ void	ft_lstadd_back(t_list **lst, t_list *new_node)
 	current->next = new_node;
 }
 
-// t_list のサイズを返す
 int	ft_lstsize(t_list *lst)
 {
 	int		count;
@@ -59,7 +56,6 @@ int	ft_lstsize(t_list *lst)
 	return (count);
 }
 
-// t_list 全体を解放する (del 関数で content も解放)
 void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
 	t_list	*current;
