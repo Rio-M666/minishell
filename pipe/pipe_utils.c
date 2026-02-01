@@ -52,7 +52,7 @@ static void	child_process(t_pipe_context *pipe_ctx, t_shell *shell)
 		exit(0);
 	if (is_builtin(pipe_ctx->current->args[0]))
 		exit(exec_builtin(pipe_ctx->current, shell));
-	cmd_path = get_command_path(pipe_ctx->current->args[0]);
+	cmd_path = get_command_path(pipe_ctx->current->args[0], shell);
 	if (!cmd_path)
 	{
 		print_error(pipe_ctx->current->args[0], "command not found");
