@@ -100,13 +100,13 @@ typedef struct s_quote_state
 	int							in_double;
 }								t_quote_state;
 
-typedef struct s_pipe_ctx
+typedef struct s_pipe_context
 {
 	int							pipe_fd[2];
 	int							prev_fd[2];
 	int							cmd_count;
 	t_cmd						*current;
-}								t_pipe_ctx;
+}								t_pipe_context;
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -115,7 +115,7 @@ int								execute_with_args(char **args);
 int								execute_pipeline(t_cmd *pipeline,
 									t_shell *shell);
 
-int								execute_pipeline_cmd(t_pipe_ctx *ctx,
+int								execute_pipeline_cmd(t_pipe_context *pipe_ctx,
 									t_shell *shell);
 
 int								apply_redirections(t_redirect *redir_list);
@@ -201,7 +201,7 @@ int								process_heredocs(t_cmd *pipeline,
 void							cleanup_heredocs(t_cmd *pipeline);
 
 void							setup_signals_heredoc(void);
-int								read_heredoc_content(char *delimiter,
+int								read_heredoc_content(char *marker,
 									int expand, t_shell *shell);
 
 /*---env/env_manager.c---*/

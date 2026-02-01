@@ -86,23 +86,24 @@ static int	count_cmds(t_cmd *pipeline)
 
 int	execute_pipeline(t_cmd *pipeline, t_shell *shell)
 {
-	t_pipe_ctx	ctx;
+	t_pipe_context	pipe_ctx;
 
 	if (!pipeline)
 		return (0);
-	ctx.cmd_count = count_cmds(pipeline);
-	if (ctx.cmd_count == 1 && pipeline->args && is_builtin(pipeline->args[0]))
+	pipe_ctx.cmd_count = count_cmds(pipeline);
+	if (pipe_ctx.cmd_count == 1 && pipeline->args
+		&& is_builtin(pipeline->args[0]))
 		return (exec_single_builtin(pipeline, shell));
-	if (ctx.cmd_count == 1 && !pipeline->redir_list)
+	if (pipe_ctx.cmd_count == 1 && !pipeline->redir_list)
 		return (execute_with_args(pipeline->args));
-	ctx.prev_fd[0] = -1;
-	ctx.prev_fd[1] = -1;
-	ctx.current = pipeline;
-	while (ctx.current)
+	pipe_ctx.prev_fd[0] = -1;
+	pipe_ctx.prev_fd[1] = -1;
+	pipe_ctx.current = pipeline;
+	while (pipe_ctx.current)
 	{
-		if (execute_pipeline_cmd(&ctx, shell) == -1)
+		if (execute_pipeline_cmd(&pipe_ctx, shell) == -1)
 			return (1);
-		ctx.current = ctx.current->next;
+		pipe_ctx.current = pipe_ctx.current->next;
 	}
-	return (wait_pipeline(ctx.cmd_count));
+	return (wait_pipeline(pipe_ctx.cmd_count));
 }

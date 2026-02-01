@@ -22,11 +22,11 @@ void	setup_signals_heredoc(void)
 	sigaction(SIGINT, &sa_int, NULL);
 }
 
-static void	print_heredoc_warning(char *delimiter)
+static void	print_heredoc_warning(char *marker)
 {
 	ft_putstr_fd("minishell: warning: ", 2);
 	ft_putstr_fd("here-document delimited by end-of-file (wanted `", 2);
-	ft_putstr_fd(delimiter, 2);
+	ft_putstr_fd(marker, 2);
 	ft_putstr_fd("')\n", 2);
 }
 
@@ -46,7 +46,7 @@ static void	write_heredoc_line(int fd, char *line, int expand, t_shell *shell)
 	free(line);
 }
 
-static int	read_heredoc_loop(int fd, char *delim, int expand, t_shell *shell)
+static int	read_heredoc_loop(int fd, char *marker, int expand, t_shell *shell)
 {
 	char	*line;
 
@@ -61,10 +61,10 @@ static int	read_heredoc_loop(int fd, char *delim, int expand, t_shell *shell)
 				setup_signals_interactive();
 				return (-1);
 			}
-			print_heredoc_warning(delim);
+			print_heredoc_warning(marker);
 			break ;
 		}
-		if (ft_strcmp(line, delim) == 0)
+		if (ft_strcmp(line, marker) == 0)
 		{
 			free(line);
 			break ;
@@ -74,7 +74,7 @@ static int	read_heredoc_loop(int fd, char *delim, int expand, t_shell *shell)
 	return (0);
 }
 
-int	read_heredoc_content(char *delimiter, int expand, t_shell *shell)
+int	read_heredoc_content(char *marker, int expand, t_shell *shell)
 {
 	char	*template;
 	int		fd;
@@ -90,7 +90,7 @@ int	read_heredoc_content(char *delimiter, int expand, t_shell *shell)
 	unlink(template);
 	setup_signals_heredoc();
 	g_signal = 0;
-	ret = read_heredoc_loop(fd, delimiter, expand, shell);
+	ret = read_heredoc_loop(fd, marker, expand, shell);
 	if (ret == -1)
 		return (-1);
 	setup_signals_interactive();
