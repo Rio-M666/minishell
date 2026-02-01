@@ -36,7 +36,7 @@ static void	write_heredoc_line(int fd, char *line, int expand, t_shell *shell)
 
 	if (expand)
 	{
-		expanded = expand_variables(line, shell);
+		expanded = expand_variables(line, shell, QUOTE_NONE);
 		write(fd, expanded, ft_strlen(expanded));
 		free(expanded);
 	}

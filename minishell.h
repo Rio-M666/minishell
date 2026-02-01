@@ -98,6 +98,7 @@ typedef struct s_quote_state
 {
 	int							in_single;
 	int							in_double;
+	t_quote_type				quote_type;
 }								t_quote_state;
 
 typedef struct s_pipe_context
@@ -183,7 +184,8 @@ char							*get_env_value(char *var_name, int var_len,
 									t_shell *shell);
 char							*process_variable(char *str, int *i,
 									t_shell *shell, t_quote_state *state);
-char							*expand_variables(char *str, t_shell *shell);
+char							*expand_variables(char *str, t_shell *shell,
+									t_quote_type quote_type);
 
 void							update_quote_state(char c,
 									t_quote_state *state);

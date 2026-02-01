@@ -73,9 +73,9 @@ char	*process_variable(char *str, int *i, t_shell *shell, t_quote_state *st)
 	int		var_len;
 	char	*value;
 
-	(*i)++;
 	if (st->in_single)
 		return (make_dollar_str());
+	(*i)++;
 	var_len = get_var_name_len(str + *i);
 	if (var_len == 0)
 		return (make_dollar_str());
