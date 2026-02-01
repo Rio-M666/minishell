@@ -1,8 +1,8 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -I$(CURDIR)
-INCLUDES = -I./includes
+CFLAGS = -Wall -Wextra -Werror
+INCLUDES = -I.
 LDFLAGS = -lreadline
 
 
@@ -44,7 +44,6 @@ SRCS += builtins/ft_cd.c \
 		builtins/ft_exit.c
 
 
-# Object files
 OBJS = $(SRCS:.c=.o)
 
 
@@ -52,19 +51,19 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
-	@echo "$(GREEN)✓ minishell compiled successfully$(RESET)"
+	@echo "$(GREEN)minishell compiled successfully$(RESET)"
 
 %.o: %.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-	@echo "$(GREEN)✓ Compiled: $<$(RESET)"
+	@echo "$(GREEN)Compiled: $<$(RESET)"
 
 clean:
 	@rm -f $(OBJS)
-	@echo "$(RED)✗ Object files removed$(RESET)"
+	@echo "$(RED)Object files removed$(RESET)"
 
 fclean: clean
 	@rm -f $(NAME)
-	@echo "$(RED)✗ $(NAME) removed$(RESET)"
+	@echo "$(RED)$(NAME) removed$(RESET)"
 
 re: fclean all
 
