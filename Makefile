@@ -10,10 +10,12 @@ SRCS = main.c execute.c path.c signal_handlers.c
 SRCS += utils/utils.c \
 		utils/utils_split.c \
 		utils/utils_str.c \
-		utils/ft_strncmp.c
+		utils/utils_char.c \
+		utils/utils_error.c
 SRCS += pipe/pipe.c \
 		pipe/pipe_utils.c \
-		pipe/pipe_redir.c
+		pipe/pipe_redir.c \
+		pipe/pipe_builtin.c
 SRCS += heredoc/heredoc.c \
 		heredoc/heredoc_utils.c
 SRCS += tokenizer/tokenizer.c \
@@ -31,7 +33,8 @@ SRCS += parser/parser.c \
 		parser/parser_list_utils.c \
 		parser/parser_free.c \
 		parser/parser_redir.c
-SRCS += env/env_manager.c
+SRCS += env/env_manager.c \
+		env/env_init.c
 SRCS += builtins/ft_cd.c \
 		builtins/ft_echo.c \
 		builtins/ft_pwd.c \

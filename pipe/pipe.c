@@ -12,36 +12,6 @@
 
 #include "minishell.h"
 
-int	is_builtin(char *cmd)
-{
-	if (!cmd)
-		return (0);
-	if (!ft_strcmp(cmd, "echo") || !ft_strcmp(cmd, "cd") || !ft_strcmp(cmd,
-			"pwd") || !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset")
-		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "exit"))
-		return (1);
-	return (0);
-}
-
-int	exec_builtin(t_cmd *cmd, t_shell *shell)
-{
-	if (!ft_strcmp(cmd->args[0], "echo"))
-		return (ft_echo(cmd->args));
-	if (!ft_strcmp(cmd->args[0], "cd"))
-		return (ft_cd(cmd->args, shell));
-	if (!ft_strcmp(cmd->args[0], "pwd"))
-		return (ft_pwd());
-	if (!ft_strcmp(cmd->args[0], "export"))
-		return (ft_export(cmd->args, shell));
-	if (!ft_strcmp(cmd->args[0], "unset"))
-		return (ft_unset(cmd->args, shell));
-	if (!ft_strcmp(cmd->args[0], "env"))
-		return (ft_env(shell));
-	if (!ft_strcmp(cmd->args[0], "exit"))
-		return (ft_exit(cmd->args, shell));
-	return (0);
-}
-
 static int	exec_single_builtin(t_cmd *cmd, t_shell *shell)
 {
 	int	saved_fd[2];
@@ -49,7 +19,7 @@ static int	exec_single_builtin(t_cmd *cmd, t_shell *shell)
 
 	saved_fd[0] = dup(STDIN_FILENO);
 	saved_fd[1] = dup(STDOUT_FILENO);
-	if (apply_redirections(cmd->redir_list))
+	if (!apply_redirections(cmd->redir_list))
 	{
 		status = exec_builtin(cmd, shell);
 		dup2(saved_fd[0], STDIN_FILENO);
@@ -65,6 +35,19 @@ static int	exec_single_builtin(t_cmd *cmd, t_shell *shell)
 	return (1);
 }
 
+static int	get_last_status(int status)
+{
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT || WTERMSIG(status) == SIGQUIT)
+			write(1, "\n", 1);
+		return (EXIT_SIGNAL_BASE + WTERMSIG(status));
+	}
+	else if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (0);
+}
+
 static int	wait_pipeline(int cmd_count)
 {
 	int	i;
@@ -73,41 +56,54 @@ static int	wait_pipeline(int cmd_count)
 
 	i = 0;
 	last_status = 0;
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	while (i < cmd_count)
 	{
 		wait(&status);
-		if (WIFEXITED(status))
-			last_status = WEXITSTATUS(status);
+		if (i == cmd_count - 1)
+			last_status = get_last_status(status);
 		i++;
 	}
+	setup_signals_interactive();
 	return (last_status);
+}
+
+static int	count_cmds(t_cmd *pipeline)
+{
+	int		count;
+	t_cmd	*current;
+
+	count = 0;
+	current = pipeline;
+	while (current)
+	{
+		count++;
+		current = current->next;
+	}
+	return (count);
 }
 
 int	execute_pipeline(t_cmd *pipeline, t_shell *shell)
 {
-	t_pipe_ctx ctx;
+	t_pipe_context	pipe_ctx;
 
 	if (!pipeline)
 		return (0);
-	ctx.cmd_count = 0;
-	ctx.current = pipeline;
-	while (ctx.current)
-	{
-		ctx.cmd_count++;
-		ctx.current = ctx.current->next;
-	}
-	if (ctx.cmd_count == 1 && pipeline->args && is_builtin(pipeline->args[0]))
+	pipe_ctx.cmd_count = count_cmds(pipeline);
+	if (pipe_ctx.cmd_count == 1 && pipeline->args
+		&& is_builtin(pipeline->args[0]))
 		return (exec_single_builtin(pipeline, shell));
-	if (ctx.cmd_count == 1 && !pipeline->redir_list)
+	if (pipe_ctx.cmd_count == 1 && !pipeline->redir_list)
 		return (execute_with_args(pipeline->args));
-	ctx.prev_fd[0] = -1;
-	ctx.prev_fd[1] = -1;
-	ctx.current = pipeline;
-	while (ctx.current)
+	pipe_ctx.prev_fd[0] = -1;
+	pipe_ctx.prev_fd[1] = -1;
+	pipe_ctx.current = pipeline;
+	while (pipe_ctx.current)
 	{
-		if (execute_pipeline_cmd(&ctx, shell) == -1)
+		if (execute_pipeline_cmd(&pipe_ctx, shell) == -1)
 			return (1);
-		ctx.current = ctx.current->next;
+		pipe_ctx.current = pipe_ctx.current->next;
 	}
-	return (wait_pipeline(ctx.cmd_count));
+	return (wait_pipeline(pipe_ctx.cmd_count));
 }

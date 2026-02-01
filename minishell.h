@@ -28,6 +28,11 @@
 # include <termios.h>
 # include <unistd.h>
 
+# define EXIT_CMD_NOT_FOUND		127
+# define EXIT_CMD_NOT_EXEC		126
+# define EXIT_SIGNAL_BASE		128
+# define DEFAULT_FILE_PERMS		0644
+
 typedef struct s_list
 {
 	void						*content;
@@ -95,13 +100,13 @@ typedef struct s_quote_state
 	int							in_double;
 }								t_quote_state;
 
-typedef struct s_pipe_ctx
+typedef struct s_pipe_context
 {
 	int							pipe_fd[2];
 	int							prev_fd[2];
 	int							cmd_count;
 	t_cmd						*current;
-}								t_pipe_ctx;
+}								t_pipe_context;
 
 extern volatile sig_atomic_t	g_signal;
 
@@ -110,7 +115,7 @@ int								execute_with_args(char **args);
 int								execute_pipeline(t_cmd *pipeline,
 									t_shell *shell);
 
-int								execute_pipeline_cmd(t_pipe_ctx *ctx,
+int								execute_pipeline_cmd(t_pipe_context *pipe_ctx,
 									t_shell *shell);
 
 int								apply_redirections(t_redirect *redir_list);
@@ -196,10 +201,11 @@ int								process_heredocs(t_cmd *pipeline,
 void							cleanup_heredocs(t_cmd *pipeline);
 
 void							setup_signals_heredoc(void);
-int								read_heredoc_content(char *delimiter,
+int								read_heredoc_content(char *marker,
 									int expand, t_shell *shell);
 
-/*---env/env_manager.c*/
+/*---env/env_manager.c---*/
+int								count_env(char **envp);
 char							**init_envp(char **envp);
 char							*ft_getenv(char *key, t_shell *shell);
 int								ft_setenv(char *key, char *value,
@@ -221,5 +227,9 @@ int								exec_builtin(t_cmd *cmd, t_shell *shell);
 int								ft_strcmp(const char *s1, const char *s2);
 int								ft_strncmp(const char *s1, const char *s2,
 									size_t n);
+
+void							print_error(char *cmd, char *msg);
+void							print_error_arg(char *cmd, char *arg,
+									char *msg);
 
 #endif

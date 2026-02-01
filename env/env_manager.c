@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int	count_env(char **envp)
+int	count_env(char **envp)
 {
 	int	i;
 
@@ -123,29 +123,4 @@ void	ft_unset_env(char *key, t_shell *shell)
 		}
 		i++;
 	}
-}
-
-char	**init_envp(char **envp)
-{
-	int i;
-	int count;
-	char **new_envp;
-
-	count = count_env(envp);
-	new_envp = malloc(sizeof(char *) * (count + 1));
-	if (!new_envp)
-		return (NULL);
-	i = 0;
-	while (i < count)
-	{
-		new_envp[i] = ft_strdup(envp[i]);
-		if (!new_envp[i])
-		{
-			free_array(new_envp);
-			return (NULL);
-		}
-		i++;
-	}
-	new_envp[i] = NULL;
-	return (new_envp);
 }

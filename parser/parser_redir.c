@@ -31,9 +31,9 @@ static int	validate_redir_filename(t_token *current)
 			handle_syntax_error(current->value);
 		else
 			handle_syntax_error("newline");
-		return (0);
+		return (1);
 	}
-	return (1);
+	return (0);
 }
 
 static void	set_heredoc_expand(t_redirect *redir, t_token *filename_token)
@@ -53,18 +53,18 @@ int	handle_redirection(t_cmd *cmd, t_token **current)
 
 	type = get_redir_type((*current)->type);
 	*current = (*current)->next;
-	if (!validate_redir_filename(*current))
-		return (0);
+	if (validate_redir_filename(*current))
+		return (1);
 	filename_token = *current;
 	filename = ft_strdup((*current)->value);
 	if (!filename)
-		return (0);
+		return (1);
 	redir = create_redirect(type, filename);
 	if (!redir)
-		return (free(filename), 0);
+		return (free(filename), 1);
 	if (type == REDIR_HEREDOC)
 		set_heredoc_expand(redir, filename_token);
 	add_redir_back(&cmd->redir_list, redir);
 	*current = (*current)->next;
-	return (1);
+	return (0);
 }
