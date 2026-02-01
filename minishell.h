@@ -110,7 +110,7 @@ typedef struct s_pipe_context
 
 extern volatile sig_atomic_t	g_signal;
 
-int								execute_with_args(char **args);
+int								execute_with_args(char **args, t_shell *shell);
 
 int								execute_pipeline(t_cmd *pipeline,
 									t_shell *shell);
@@ -120,7 +120,7 @@ int								execute_pipeline_cmd(t_pipe_context *pipe_ctx,
 
 int								apply_redirections(t_redirect *redir_list);
 
-char							*get_command_path(char *cmd);
+char							*get_command_path(char *cmd, t_shell *shell);
 
 char							**ft_split(char const *s, char c);
 char							*ft_strjoin(char const *s1, char const *s2);

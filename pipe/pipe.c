@@ -95,7 +95,7 @@ int	execute_pipeline(t_cmd *pipeline, t_shell *shell)
 		&& is_builtin(pipeline->args[0]))
 		return (exec_single_builtin(pipeline, shell));
 	if (pipe_ctx.cmd_count == 1 && !pipeline->redir_list)
-		return (execute_with_args(pipeline->args));
+		return (execute_with_args(pipeline->args, shell));
 	pipe_ctx.prev_fd[0] = -1;
 	pipe_ctx.prev_fd[1] = -1;
 	pipe_ctx.current = pipeline;

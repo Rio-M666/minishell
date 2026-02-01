@@ -63,14 +63,14 @@ static int	check_cmd_error(char *cmd)
 	return (print_error(cmd, "command not found"), EXIT_CMD_NOT_FOUND);
 }
 
-int	execute_with_args(char **args)
+int	execute_with_args(char **args, t_shell *shell)
 {
 	pid_t	pid;
 	char	*cmd_path;
 
 	if (!args || !args[0] || !args[0][0])
 		return (0);
-	cmd_path = get_command_path(args[0]);
+	cmd_path = get_command_path(args[0], shell);
 	if (!cmd_path)
 		return (check_cmd_error(args[0]));
 	pid = fork();
