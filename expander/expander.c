@@ -22,7 +22,7 @@ void	expand_tokens(t_token *tokens, t_shell *shell)
 	{
 		if (current->type == TOKEN_WORD && current->quote != QUOTE_SINGLE)
 		{
-			expanded = expand_variables(current->value, shell);
+			expanded = expand_variables(current->value, shell, current->quote);
 			if (expanded)
 			{
 				free(current->value);
