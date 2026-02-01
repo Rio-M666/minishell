@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: toyamagu <toyamagu@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: mrio <mrio@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:53:21 by mrio              #+#    #+#             */
-/*   Updated: 2026/01/25 00:28:33 by toyamagu         ###   ########.fr       */
+/*   Updated: 2026/02/01 16:45:48 by mrio             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,6 @@ void							setup_signals_heredoc(void);
 int								read_heredoc_content(char *marker,
 									int expand, t_shell *shell);
 
-/*---env/env_manager.c---*/
 int								count_env(char **envp);
 char							**init_envp(char **envp);
 char							*ft_getenv(char *key, t_shell *shell);
@@ -211,7 +210,6 @@ int								ft_setenv(char *key, char *value,
 									t_shell *shell);
 void							ft_unset_env(char *key, t_shell *shell);
 
-/* --- builtins/ --- */
 int								ft_echo(char **args);
 int								ft_cd(char **args, t_shell *shell);
 int								ft_pwd(void);
