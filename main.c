@@ -62,5 +62,6 @@ int	main(int argc, char **argv, char **envp)
 		process_input(line, &shell);
 		free(line);
 	}
+	free_array(shell.envp);
 	return (0);
 }

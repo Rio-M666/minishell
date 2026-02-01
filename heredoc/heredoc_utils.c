@@ -84,10 +84,13 @@ int	read_heredoc_content(char *marker, int expand, t_shell *shell)
 	if (!template)
 		return (-1);
 	fd = mkstemp(template);
-	free(template);
 	if (fd == -1)
+	{
+		free(template);
 		return (perror("mkstemp"), -1);
+	}
 	unlink(template);
+	free(template);
 	setup_signals_heredoc();
 	g_signal = 0;
 	ret = read_heredoc_loop(fd, marker, expand, shell);
